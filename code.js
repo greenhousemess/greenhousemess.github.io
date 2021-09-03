@@ -131,6 +131,9 @@ var MealList1 = document.createElement('div')
 MealList1.innerText = new Date(data[i].data[k][0]).toString().substr(4, 11).replace(/ /g,', ').replace(',','')
 var MealList2 = document.createElement('div')
 MealList2.innerText = data[i].data[k][1]*0.5
+if(data[i].data[k][1]==""){
+MealList2.innerText = ""
+}
 var MealList3 = document.createElement('div')
 MealList3.innerText = data[i].data[k][2]
 var MealList4 = document.createElement('div')
@@ -176,9 +179,9 @@ List.setAttribute('class', 'row5 row')
 var List1 = document.createElement('div')
 List1.innerText =  "Date"
 var List2 = document.createElement('div')
-List2.innerText = "Amount"
+List2.innerText = "Source"
 var List3 = document.createElement('div')
-List3.innerText = "Source"
+List3.innerText = "Amount"
 var List4 = document.createElement('div')
 List4.innerText = "Voucher"
 List.appendChild(List1)
