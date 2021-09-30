@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+</style>
+</head>
+<body>
+Select a file: <input type="file" id="uploader">
+<button onclick="resize()">Resize</button>
+<img id="image">
+<div id="info"></div>
+<script type="text/javascript">
+function resize(){
+  var resize_width = 600;//without px
+  var item = document.querySelector('#uploader').files[0];
+  var reader = new FileReader();
+  reader.readAsDataURL(item);
+  reader.name = item.name;
+  reader.size = item.size; 
+  reader.onload = function(event) {
+    var img = new Image();
+    img.src = event.target.result;
+    img.name = event.target.name;
+    img.size = event.target.size;
+    img.onload = function(el) {
+      var elem = document.createElement('canvas');
+      var scaleFactor = resize_width / el.target.width;
+      elem.width = resize_width;
+      elem.height = el.target.height * scaleFactor;
+      var ctx = elem.getContext('2d');
+      ctx.drawImage(el.target, 0, 0, elem.width, elem.height);
+      var srcEncoded = ctx.canvas.toDataURL('image/png', 1);
+      document.querySelector('#image').src = srcEncoded;
+     
+     var formData = new FormData();
+     formData.append("skin", "shinra");
+     formData.append("language", "en")
+     formData.append("protocol", "FTP")
+     formData.append("ftpserver", "form.6te.net")
+     formData.append("username", "form.6te.net")
+     formData.append("password_encrypted", "65986307537423FA8D78AD8DA79B")
+     formData.append("state", "upload")
+     formData.append("screen", "2")
+     formData.append("directory", "/folder/photo")
+     formData.append("file[]", b64toBlob(srcEncoded))
+     var xhttp = new XMLHttpRequest();
+     
+     // Set POST method and ajax file path
+     xhttp.open("POST", "https://form.6te.net/ftp/index.php", true);
+     
+     // call on request changes state
+     xhttp.onreadystatechange = function() {
+     alert(this.readyState + '-'+ this.status)
+     if (this.readyState == 4 && this.status == 200) {
+     
+     var response = this.responseText;
+     alert(response)
+     }
+     };
+     
+     xhttp.send(formData);
+     
+     /*
+      var url = "https://form.6te.net/folder/upload.php"
+      fetch(url,{
+      method: "POST",
+      mode: "no-cors",
+      header:{
+      'Content-Type': 'application/json'
+      },
+      body: FileData(item)//dataURLtoFile(srcEncoded,new Date().getTime()))
+      })
+      .then(text=>{
+      alert(text)
+       info.innerText = "Uploading 50%"
+      })
+      .catch(err=>{
+      alert(err)
+      }
+      ); */
+      
+      
+    }
+  }
+}
+
+function FileData(data){
+  var dataToPost = new FormData(); 
+  dataToPost.append("file", data)
+  return dataToPost;
+  }
+  
+function base64Toblob(data){
+fetch(data)
+    .then(res => res.blob())
+    .then(blob => {
+      return blob;
+    });
+}
+
+function b64toBlob(dataURI) {
+    
+    var byteString = atob(dataURI.split(',')[1]);
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: 'image/png' });
+}
+</script>
+</body>
+</html>
